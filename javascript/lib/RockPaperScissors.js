@@ -1,29 +1,3 @@
-/* Selection class */
-
-function Select(name) {
-  this.name = name;
-}
-
-Select.prototype.pairs = {
-  rock: {scissors: 'crushes', lizard: 'crushes'},
-  paper: {rock: 'covers', spock: 'disproves'},
-  scissors: {paper: 'cut', lizard: 'decapitates'},
-  lizard: {spock: 'poisons', paper: 'eats'},
-  spock: {scissors: 'smashes', rock: 'vaporizes'}
-}
-
-Select.prototype.winner = function(otherSelection) {
-  var method = this.pairs[this.name][otherSelection.name];
-
-  if(method) {
-      return [this.name, method, otherSelection.name].join(' ');
-  } 
-  
-  else {
-      return false;
-  }
-
-}
 
 /* Player class */
 
@@ -31,8 +5,33 @@ function Player(name) {
   this.name = name;
 }
 
-Player.prototype.picks = function(playerSelection) {
-  this.pick = new Select(playerSelection)
+Player.prototype.picks = function(playerPick) {
+  this.pick = new Pick(playerPick)
+}
+
+
+/* Selection class */
+
+function Pick(name) {
+  this.name = name;
+}
+
+Pick.prototype.pairs = {
+  rock: {scissors: 'crushes', lizard: 'crushes'},
+  paper: {rock: 'covers', spock: 'disproves'},
+  scissors: {paper: 'cut', lizard: 'decapitates'},
+  lizard: {spock: 'poisons', paper: 'eats'},
+  spock: {scissors: 'smashes', rock: 'vaporizes'}
+}
+
+Pick.prototype.beats = function(otherPick) {
+  var action = this.pairs[this.name][otherPick.name];
+  if(action) {
+      return [this.name, action, otherPick.name].join(' ');
+  }  
+  else {
+      return false;
+  }
 }
 
 
@@ -43,15 +42,11 @@ function Game(player1, player2) {
   this.player2 = player2;
 }
 
-
 Game.prototype.winner = function() {
-  var player1Wins = this.player1.pick.winner(this.player2.pick);
-  var player2Wins = this.player2.pick.winner(this.player1.pick)
-
-  if(player1Wins) return player1Wins;
-  if(player2Wins) return player2Wins;
-
+  var p1Wins = this.player1.pick.beats(this.player2.pick);
+  var p2Wins = this.player2.pick.beats(this.player1.pick);
+  if(p1Wins) return p1Wins;
+  if(p2Wins) return p2Wins;
   return 'Draw';
-
 }
 
